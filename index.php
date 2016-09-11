@@ -1,2 +1,2 @@
 <?php
-echo "Test";
+include 'include/database.php';
