@@ -3,13 +3,14 @@
 include 'includes/database.php';
 $con = new Connection();
 $con->getConnection();
-$data = array("10", "89", "Salatiga");
-//$con->tambah("mahasiswa", "id_mahasiswa, nim, alamat", $data);
-$array = array("tabel" => "mahasiswa",
+$array = array(
+    "tabel" => "mahasiswa",
     "data" => array(
-        "id_mahasiswa" => 11,
+        "alamat" => "Klampeyan RT 01 RW 03 Salatiga"
+    ),
+    "where" => array(
         "nim" => 104275026,
-        "alamat" => "Salatiga"
+        "id_mahasiswa" => 12
     )
 );
-$con->tambahData($array);
+
