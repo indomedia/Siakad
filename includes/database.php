@@ -57,4 +57,24 @@ class Connection {
         }
     }
 
+    public function hapusData($array) {
+        try {
+            $value = array_values($array);
+            $table = $value[0];
+            $wherecount = array_keys($value[2]);
+            $count = count($wherecount);
+            if ($count <= 1) {
+                $where = implode("=?,", array_keys($value[2])) . "=?";
+            } else if ($count >= 2) {
+                $where = implode("=? AND ", array_keys($value[2])) . "=?";
+            }
+            $ql = "DELETE FROM $table WHERE $where";
+            $stmt = $this->db->prepare($ql);
+            $stmt->execute(array_values($value[2]));
+            echo $stmt->rowCount()." record berhasil dihapus";
+        } catch (PDOException $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
 }
