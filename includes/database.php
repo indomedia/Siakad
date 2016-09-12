@@ -49,7 +49,6 @@ class Connection {
                 $where = implode("=? AND ", array_keys($value[2])) . "=?";
             }
             $ql = "UPDATE $table SET $data_key WHERE $where";
-            //echo $ql.'<br>'.implode(",",$data_value);
             $stmt = $this->db->prepare($ql);
             $stmt->execute($data_value);
             echo 'berhasil';
