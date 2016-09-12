@@ -71,7 +71,40 @@ class Connection {
             $ql = "DELETE FROM $table WHERE $where";
             $stmt = $this->db->prepare($ql);
             $stmt->execute(array_values($value[2]));
-            echo $stmt->rowCount()." record berhasil dihapus";
+            echo $stmt->rowCount() . " record berhasil dihapus";
+        } catch (PDOException $ex) {
+            echo $ex->getMessage();
+        }
+    }
+
+    public function ambilData($array) {
+        try {
+            $value = array_values($array);
+            $table = $value[0];
+            $selector = array_keys($value[1]);
+            $selectorCount = count($selector);
+            if ($selectorCount < 1 || $selectorCount == null) {
+                $selectorClause = "*";
+            } else if ($selectorCount >= 1) {
+                $selectorClause = implode(", ", $value[1]);
+            }
+            $where = array_keys($value[2]);
+            $whereCount = count($where);
+            if ($whereCount < 1) {
+                $whereClause = "";
+            } else if ($whereCount == 1) {
+                $whereClause = "WHERE " . implode("=?,", array_keys($value[2])) . "=?";
+            } else if ($whereCount >= 2) {
+                $whereClause = "WHERE " . implode("=? AND ", array_keys($value[2])) . "=?";
+            }
+            $ql = "SELECT $selectorClause FROM $table $whereClause";
+            $stmt = $this->db->prepare($ql);
+            if ($whereCount < 1) {
+                $stmt->execute();
+            } elseif ($whereCount >= 1) {
+                $stmt->execute(array_values($value[2]));
+            }
+           return $stmt->fetchAll(PDO::FETCH_BOTH);
         } catch (PDOException $ex) {
             echo $ex->getMessage();
         }
