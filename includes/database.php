@@ -1,17 +1,27 @@
 <?php
-try{
-	$db=new PDO("mysql:host=localhost;dbname=siakad;charset=utf8mb4","root","beta");
-	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	}catch(PDOException $ex){
-	exit("Tidak dapat menyambungkan dengan database! ".$ex->getMessage());
+
+class Connection {
+    protected $db;
+    public function Connection() {
+        $conn = NULL;
+        try {
+            $conn = new PDO("mysql:host=localhost;dbname=siakad", "root", "beta");
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            echo 'ERROR: ' . $e->getMessage();
+        }
+        $this->db = $conn;
+    }
+    public function getConnection() {
+        return $this->db;
+    }
+    public function tambah($tabel, $kolom, $data) {
+        $tag = ltrim(str_repeat(",?", count($data)), ",");
+        $sql = "INSERT INTO $tabel($kolom) VALUES ($tag)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($data);
+    }
+
 }
 
-
-
-//$sql="INSERT INTO mahasiswa(id_mahasiswa, nim, alamat) VALUES (?, ?, ?)";
-//$stmt = $db->prepare($sql);
-//$stmt->execute(array(1,2,3));
-$db->query("select * from mahasiswa");
-foreach ($db->fetch(PDO::FETCH_BOTH) as $row){
-    echo $row['nim'];
-}
+?>
